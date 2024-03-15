@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const oracledb = require("oracledb");
 const cors = require("cors");
-const moment = require('moment');
 
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
@@ -72,7 +71,6 @@ app.get("/obtenerEmpleado", async (request, response) => {
     while ((row = await resultSet.getRow())) {
       rows.push(row);
     }
-
     //Obtencion de la salida de empleados_out
     await resultSet.close();
     await connection.close();
@@ -83,6 +81,8 @@ app.get("/obtenerEmpleado", async (request, response) => {
     response.status(500).send("Error");
   }
 });
+
+
 
 // Esta parte del codigo siempre tiene que ir al final
 app.listen(3002, () => {
