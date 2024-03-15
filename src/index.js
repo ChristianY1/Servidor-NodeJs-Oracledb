@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const oracledb = require("oracledb");
 const cors = require("cors");
+const moment = require('moment');
 
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
@@ -25,23 +26,24 @@ connectionOracleBD();
 app.use(express.json());
 
 app.post("/create", async (request, response) => {
-  const { nombre, edad, pais, cargo, anios } = request.body;
+  const { nombre, apellido, fechaNacimiento, salario, departamentoId } = request.body;
+  
   try {
     const connection = await oracledb.getConnection();
-    const sql = `INSERT INTO empleados (nombre, edad, pais, cargo, anios) VALUES (:nombre, :edad, :pais, :cargo, :anios)`;
+    const sql = `INSERT INTO empleados (nombre, apellido, fecha_nacimiento, salario, departamento_id) VALUES (:nombre, :apellido, :fechaNacimiento, :salario, :departamentoId)`;
     const binds = {
       nombre: nombre,
-      edad: edad,
-      pais: pais,
-      cargo: cargo,
-      anios: anios,
+      apellido: apellido,
+      fechaNacimiento: new Date(fechaNacimiento),
+      salario: salario,
+      departamentoId: departamentoId,
     };
     const options = { autoCommit: true };
     const result = await connection.execute(sql, binds, options);
     console.log("Datos insertados correctamente:", result.rowsAffected);
     response.status(200).send("Datos insertados correctamente");
   } catch (err) {
-    console.log("Error al insertar datos:", err);
+    console.log("Error al insertar datos:", err, nombre, apellido, fechaNacimiento, salario, departamentoId);
     response.status(500).send("Error");
   }
 });
